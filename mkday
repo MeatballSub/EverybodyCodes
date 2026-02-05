@@ -1,0 +1,117 @@
+#!/bin/bash
+
+function usage()
+{
+    echo "Usage: $0 [Year] [Day]"
+    exit 1
+}
+
+function processArgs()
+{
+    if [ $# -ne 2 ]; then
+        usage
+    fi
+
+    YEAR="$1"
+    DAY=$(printf "%02d" "$2")
+}
+
+function makeProjectDir()
+{
+    QUEST_DIR="./$YEAR/Quest$DAY"
+    if [ -d "$QUEST_DIR" ]; then
+        echo "$QUEST_DIR already exists"
+        exit 2
+    fi
+
+    mkdir -pv "$QUEST_DIR"
+}
+
+function makeInputFiles()
+{
+    touch "$QUEST_DIR"/{Notes1.txt,Notes2.txt,Notes3.txt,Sample.txt}
+}
+
+function makeHelloWorld()
+{
+    cat > "$QUEST_DIR/Program.cs" <<EOF
+using static Library.Parsing;
+using static Library.Testing;
+
+long part1(string file_name)
+{
+    var solution = 0L;
+    var input = readFileLines(file_name);
+
+    return solution;
+}
+
+long part2(string file_name)
+{
+    var solution = 0L;
+    var input = readFileLines(file_name);
+
+    return solution;
+}
+
+long part3(string file_name)
+{
+    var solution = 0L;
+    var input = readFileLines(file_name);
+
+    return solution;
+}
+
+test(part1, "part1", "Sample.txt", 0);
+test(part1, "part1", "Notes1.txt", 0);
+
+test(part2, "part2", "Sample.txt", 0);
+test(part2, "part2", "Notes2.txt", 0);
+
+test(part3, "part3", "Sample.txt", 0);
+test(part3, "part3", "Notes3.txt", 0);
+EOF
+}
+
+function makeProjectFile()
+{
+    cat > "$QUEST_DIR/Day$DAY.csproj" <<EOF
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Library">
+      <HintPath>..\..\Library\obj\Release\net8.0\Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Notes1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Notes2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Notes3.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
+EOF
+}
+
+processArgs $@
+makeProjectDir
+makeInputFiles
+makeHelloWorld
+makeProjectFile
