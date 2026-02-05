@@ -1,29 +1,19 @@
-﻿int min_neighbor_depth(Dictionary<(int x, int y), int> depths, (int x, int y) location)
+﻿using Library;
+
+int min_neighbor_depth(Dictionary<Library.Geometry.Point, int> depths, Library.Geometry.Point location)
 {
-    var up = depths.GetValueOrDefault((location.x, location.y - 1), 0);
-    var down = depths.GetValueOrDefault((location.x, location.y + 1), 0);
-    var left = depths.GetValueOrDefault((location.x - 1, location.y), 0);
-    var right = depths.GetValueOrDefault((location.x + 1, location.y), 0);
-    return new int[] { up, down, left, right }.Min();
+    return location.orthogonalNeighbors().Select(n => depths.GetValueOrDefault(n, 0)).Min();
 }
 
-int min_neighbor_depth_diagonals(Dictionary<(int x, int y), int> depths, (int x, int y) location)
+int min_neighbor_depth_diagonals(Dictionary<Library.Geometry.Point, int> depths, Library.Geometry.Point location)
 {
-    var up = depths.GetValueOrDefault((location.x, location.y - 1), 0);
-    var down = depths.GetValueOrDefault((location.x, location.y + 1), 0);
-    var left = depths.GetValueOrDefault((location.x - 1, location.y), 0);
-    var right = depths.GetValueOrDefault((location.x + 1, location.y), 0);
-    var up_left = depths.GetValueOrDefault((location.x - 1, location.y - 1), 0);
-    var up_right = depths.GetValueOrDefault((location.x + 1, location.y - 1), 0);
-    var down_left = depths.GetValueOrDefault((location.x - 1, location.y + 1), 0);
-    var down_right = depths.GetValueOrDefault((location.x + 1, location.y + 1), 0);
-    return new int[] { up, down, left, right, up_left, up_right, down_left, down_right }.Min();
+    return location.diagonalNeighbors().Union(location.orthogonalNeighbors()).Select(n => depths.GetValueOrDefault(n, 0)).Min();
 }
 
-int solve(string file_name, Func<Dictionary<(int x, int y), int>, (int x, int y), int> check_neighbors)
+int solve(string file_name, Func<Dictionary<Library.Geometry.Point, int>, Library.Geometry.Point, int> check_neighbors)
 {
-    var map = File.ReadAllText(file_name).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(l => l.ToCharArray()).ToArray();
-    Dictionary<(int x, int y), int> depths = new();
+    var map = Library.Parsing.readFileAsGrid(file_name);
+    Dictionary<Library.Geometry.Point, int> depths = new();
 
     for (int y = 0; y < map.Length; y++)
     {
@@ -38,15 +28,7 @@ int solve(string file_name, Func<Dictionary<(int x, int y), int>, (int x, int y)
 
     while (true)
     {
-        HashSet<(int x, int y)> dig = new();
-        foreach (var (location, depth) in depths)
-        {
-            if (check_neighbors(depths, location) == depth)
-            {
-                dig.Add(location);
-            }
-        }
-
+        HashSet<Library.Geometry.Point> dig = depths.Where(kvp => check_neighbors(depths, kvp.Key) == kvp.Value).Select(kvp => kvp.Key).ToHashSet();
         if (dig.Count == 0) break;
 
         foreach (var location in dig)

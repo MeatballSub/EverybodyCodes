@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="Library">
+      <HintPath>..\..\Library\obj\Release\net8.0\Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Notes1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
