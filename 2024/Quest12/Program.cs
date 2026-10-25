@@ -25,7 +25,7 @@ long part3(string file_name)
     return solution;
 }
 
-test(part1, "part1", "Sample.txt", 0);
+test(part1, "part1", "Sample.txt", 13);
 test(part1, "part1", "Notes1.txt", 0);
 
 test(part2, "part2", "Sample.txt", 0);
