@@ -257,8 +257,8 @@ namespace Library
             void setBestCost(VertexType vertex, CostType bestCost);
             CostType? getBestCost(VertexType vertex);
             bool tryGetBestCost(VertexType vertex, out CostType? best_cost);
-
             bool containsBestCostFor(VertexType vertex);
+            void resetSearch();
         }
 
         public abstract class BaseGraph<VertexType, CostType> : IGraph<VertexType, CostType> where VertexType : IEquatable<VertexType> where CostType : IComparable<CostType>, IAdditiveIdentity<CostType, CostType>, IAdditionOperators<CostType, CostType, CostType>
@@ -290,6 +290,11 @@ namespace Library
                 }
                 path.Reverse();
                 return path;
+            }
+            public virtual void resetSearch()
+            {
+                best_costs.Clear();
+                predecessors.Clear();
             }
         }
 
@@ -379,6 +384,7 @@ namespace Library
             CostType start_potential = start_cost + graph.heuristic(start_vertex);
             int start_index = spaghetti_stack.Push(start_vertex, -1);
 
+            graph.resetSearch();
             graph.setBestCost(start_vertex, start_cost);
             frontier.Enqueue(start_index, start_potential);
 
