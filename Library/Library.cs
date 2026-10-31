@@ -141,7 +141,7 @@ namespace Library
         public static IEnumerable<IEnumerable<long>> ExtractSignedLongs(this IEnumerable<string> str) => str.Select(s => Regex.Matches(s, @"-?\d+").Select(_ => long.Parse(_.Value)));
 
         public static string get(this Match m, string named_capture) => m.Groups[named_capture].Value;
-        public static char at(this char[][] arr, Geometry.Point p) => arr[p.Y][p.X];
+        public static ref char at(this char[][] arr, Geometry.Point p) => ref arr[p.Y][p.X];
         public static char at(this string[] arr, Geometry.Point p) => arr[p.Y][(int)p.X];
         public static (bool found, Geometry.Point location) find(this char[][] arr, char c)
         {
